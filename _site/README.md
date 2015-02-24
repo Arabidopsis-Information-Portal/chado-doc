@@ -1,3 +1,13 @@
-# Araport Chado Extension
+# Araport Chado Documentation
 
-View the website at [http://arabidopsis-information-portal.github.io/chado-doc/](http://arabidopsis-information-portal.github.io/chado-doc/).
+*	Chado Schema Tables
+* 	[Chado Database & Tripal Access](a_application.md)
+*  Germplasm
+*  Polymorphism/Locus/Germplasm Associations
+* 	Polymorhism Insertion Lines
+*  Phenotypes
+*  Phenotypes/Locus/Germplasm
+*  Example Pages
+*  Github Repositories
+*  Release Notes
+*  Exemplar Databases

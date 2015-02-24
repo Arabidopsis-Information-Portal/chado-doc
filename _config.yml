@@ -10,7 +10,7 @@ title:            Araport Chado Documentation
 tagline:          'Araport Chado Extension'
 
 description: 'Find us online <a href="https://twitter.com/araport">@araport</a>, <a href="http://araport.org">The Arabidopsis Information Portal</a> and <a href="https://github.com/Arabidopsis-Information-Portal/chado-doc">Github</a>.'
-url: http://arabidopsis-information-portal.github.io/chado-doc/
+url:            http://arabidopsis-information-portal.github.io/chado-doc
 
 paginate:         5
 
@@ -19,4 +19,4 @@ version:          2.0.0
 
 github:
   repo:           https://github.com/Arabidopsis-Information-Portal/chado-doc
-baseurl:          /chado-doc
+
