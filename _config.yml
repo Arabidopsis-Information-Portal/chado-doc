@@ -1,19 +1,16 @@
 # Dependencies
 markdown:         redcarpet
-pygments:         true
+highlighter:      true
 
 # Permalinks
 permalink:        pretty
 
 # Setup
-title:            jtleek
-tagline:          'Leek Group'
-description:      'Find me online <a href="http://twitter.com/jtleek">@jtleek</a>, <a href="http://twitter.com/simplystats">@simplystats</a>, <a href="http://simplystatistics.org">Simply Statistics</a>, and <a href="https://github.com/jtleek">Github</a>.'
-url:              http://jtleek.github.io
+title:            Araport Chado Documentation
+tagline:          'Araport Chado Extension'
 
-author:
-  name:           'Jeff Leek'
-  url:            https://twitter.com/jtleek
+description: 'Find us online <a href="https://twitter.com/araport">@araport</a>, <a href="http://araport.org">The Arabidopsis Information Portal</a> and <a href="https://github.com/Arabidopsis-Information-Portal/chado-doc">Github</a>.'
+url: http://arabidopsis-information-portal.github.io/chado-doc/
 
 paginate:         5
 
@@ -21,4 +18,4 @@ paginate:         5
 version:          2.0.0
 
 github:
-  repo:           https://github.com/jtleek/jtleek.github.io
+  repo:           https://github.com/Arabidopsis-Information-Portal/chado-doc

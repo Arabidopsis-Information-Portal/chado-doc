@@ -1,3 +1,3 @@
-# Leek Group Website
+# Araport Chado Extension
 
-View the website at [http://jtleek.github.io](http://jtleek.github.io).
+View the website at [http://arabidopsis-information-portal.github.io/chado-doc/](http://arabidopsis-information-portal.github.io/chado-doc/).
