@@ -10,7 +10,7 @@ Araport Chado Postgres database available for browsing and quering. The database
 ```
 	database: stockdw
 	user: tripal1
-	password: tripal1
+	password: 
 ```
 
 Tripal web-site is available for viewing [Araport Stock Genetic Datasets.](http://araport-dev.jcvi.org/stockdw/)
@@ -19,7 +19,7 @@ Tripal web-site is available for viewing [Araport Stock Genetic Datasets.](http:
 
 ```
 	user: administrator
-	password: admin123
+	password: 
 ```
 	
 
