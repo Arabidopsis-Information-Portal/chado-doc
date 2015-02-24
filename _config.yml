@@ -19,3 +19,4 @@ version:          2.0.0
 
 github:
   repo:           https://github.com/Arabidopsis-Information-Portal/chado-doc
+baseurl:          /chado-doc
