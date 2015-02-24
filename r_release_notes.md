@@ -25,7 +25,7 @@ title: Release Notes
 
 ## Araport Chado Database Schema 1.0
 
-Araport extension of the Chado database schema has been released, and pushed to a [github repository](https://github.com/Arabidopsis-Information-Portal/chado-schema). 
+Araport extension of the Chado database schema has been released, and pushed to a [github repository](https://github.com/Arabidopsis-Information-Portal/chado-schema). The repository includes the standard gmod chado schema and araport extension of the gmod schema.
 
 [Technical release notes](https://github.com/Arabidopsis-Information-Portal/chado-schema/blob/master/araport_release_notes.md)
 
