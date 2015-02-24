@@ -14,11 +14,11 @@ title: Example Pages
 
 # Feature Examples Associated with Polymorphisms
 
-* [Locus and Polymorphism Association](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/gene/AT1G51680)
+* [Locus and Polymorphism Association - AT1G51680 & 4CL1-1](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/gene/AT1G51680)
 
-* [Locus and Allele Association](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/gene/AT1G51680)
+* [Locus and Sequence Allele Association - AT1G51680 & SALK_142526.46.30.X](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/gene/AT1G51680)
 
-* [Insertion Flanking Region](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/sequence_variant/SALK_142526.46.30.X)
+* [Insertion Flanking Region - SALK_142526.46.30.X](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/sequence_variant/SALK_142526.46.30.X)
 	
 	
 	
