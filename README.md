@@ -7,7 +7,7 @@
 * 	Polymorhism Insertion Lines
 *  Phenotypes
 *  Phenotypes/Locus/Germplasm
-*  Example Pages
-*  Github Repositories
-*  Release Notes
-*  Exemplar Databases
+*  [Example Pages in Tripal](g_example_pages.md)
+*  [Github Repositories](r1_github_repositories.md)
+*  [Release Notes](r_release_notes.md)
+*  [Exemplar Databases](r3_rr_exemplar Databases.md)
