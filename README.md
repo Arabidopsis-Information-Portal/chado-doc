@@ -3,7 +3,7 @@
 *	Chado Schema Tables
 * 	[Chado Database & Tripal Access](a_application.md)
 *  Germplasm
-*  Polymorphism/Locus/Germplasm Associations
+*  [Polymorphism/Locus/Germplasm Associations](c_polymorphism.md)
 * 	Polymorhism Insertion Lines
 *  Phenotypes
 *  Phenotypes/Locus/Germplasm
