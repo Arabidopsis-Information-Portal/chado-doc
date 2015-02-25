@@ -18,9 +18,9 @@ title: Example Pages
 
 * [Locus and Polymorphism Association - AT1G51680 & 4CL1-1](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/gene/AT1G51680)
 
-* [Locus and Sequence Allele Association - AT1G51680 & SALK_142526.46.30.X](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/gene/AT1G51680)
+* [Allele and Transposon Feature Association - 4CL1-1 & SALK_142526.46.30.X](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/gene/AT1G51680)
 
-* [Insertion Flanking Region - SALK_142526.46.30.X](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/sequence_variant/SALK_142526.46.30.X)
+* [Transposable Element Insertion Site - SALK_142526.46.30.X](http://araport-dev.jcvi.org/stockdw/?q=feature/arabidopsis/thaliana/transposable_element_insertion_site/SALK_142526.46.30.X%3Atransposable_element_insertion_site)
 
 * [TAIR Polymorphism: 4cl1-1](http://www.arabidopsis.org/servlets/TairObject?id=500201440&type=polyallele)
 	
