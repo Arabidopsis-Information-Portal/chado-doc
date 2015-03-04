@@ -192,6 +192,32 @@ V.stock_id = sb.stock_id
 where sb.name = 'CS65790' and c.name = 'offspring_of' order by str.rank;
 
 -- GENETIC CONTEXT
+
+-- Germplasm Polymorphisms
+SELECT
+	s.name germplasm_name, 
+	g.name genotype_name,
+	g.uniquename genotype_uniquename,
+	g.description genotype_description,
+	c.name zygosity
+	
+FROM
+	stock_genotype sg
+	left join
+	stock_genotype_cvterm stg 
+	on sg.stock_genotype_id = stg.stock_genotype_id
+	join 
+	cvterm c 
+	on c.cvterm_id = stg.cvterm_id
+	join stock s
+	on s.stock_id = sg.stock_id
+	join genotype g
+	on g.genotype_id = sg.genotype_id
+	join cv 
+	on cv.cv_id = c.cv_id 
+	where s.name = 'CS65790' and cv.name = 'genotype_type';
+
+
 -- locus and allele feature accociated with the germplasm 
 select distinct f."name" locus, fo."name" allele,  s.name germplasm_name from feature_relationship fp 
 join feature f

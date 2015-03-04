@@ -253,6 +253,38 @@ where sb.name = 'CS65790' and c.name = 'offspring_of' order by str.rank;
 | 1                     | individual_line | CS65790        | is a offspring_of | SALK_142526 |
 
 ## Genetic Context
+### Germplasm Polymorphisms
+
+```
+SELECT
+	s.name germplasm_name, 
+	g.name genotype_name,
+	g.uniquename genotype_uniquename,
+	g.description genotype_description,
+	c.name zygosity
+	
+FROM
+	stock_genotype sg
+	left join
+	stock_genotype_cvterm stg 
+	on sg.stock_genotype_id = stg.stock_genotype_id
+	join 
+	cvterm c 
+	on c.cvterm_id = stg.cvterm_id
+	join stock s
+	on s.stock_id = sg.stock_id
+	join genotype g
+	on g.genotype_id = sg.genotype_id
+	join cv 
+	on cv.cv_id = c.cv_id 
+	where s.name = 'CS65790' and cv.name = 'genotype_type';
+```
+
+#### SQL Output
+| germplasm_name | genotype_name | genotype_uniquename                  | genotype description                                                                                                                                                                                                                                                                                                         | zygosity   |
+|----------------|---------------|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| CS65790        | 4CL1-1        | SALK_142526.46.30.X:AT1G51680:4CL1-1 | PCR was performed on Arabidopsis thaliana lines each of which contains one or more TDNA insertion elements. The resultant fragment for each line was directly sequenced to determine the genomic sequence at the site of insertion. Details of the protocols used can be found at http://signal.salk.edu/tdna_protocols.html | homozygous |
+
 ### Locus and allele feature accociated with the germplasm 
 
 ```
