@@ -1,3 +1,4 @@
+--GERMPLASM BASE INFO
 SELECT
 	s.name germplasm_name, cs.name germplasm_type,
 	db.urlprefix || dbx.accession germplasm_tair_accession_url,
@@ -32,9 +33,6 @@ FROM
 WHERE
 	s.name = 'CS65790';
 
-
-select * from stock s WHERE s.name = 'CS65790';
-
 -- Other Names - NASC Stock Number
 select s.name germplasm_name, sn.name nasc_stock_number from stock_synonym stn
 join 
@@ -45,7 +43,84 @@ stock s
 on s.stock_id = stn.stock_id
 and s.name = 'CS65790';
 
-select * from stock s where s.name = 'CS65790';
+-- GERMPPLASM DESCRIPTOR
+
+--GERMPLASM ANNOTATED TERMS
+SELECT
+	s.name germplasm_name,
+	s.description,
+	cv.name term_type,
+	case when sv.is_not then 'is not a' else 'is a' end as relationship_type,
+	c.name assigned_term
+FROM
+	stock_cvterm sv JOIN cvterm c
+		ON
+		c.cvterm_id = sv.cvterm_id JOIN cv
+		ON
+		cv.cv_id = c.cv_id JOIN stock s
+		ON
+		s.stock_id = sv.stock_id
+WHERE
+	s.name = 'CS65790'
+ORDER BY
+	sv.rank;
+	
+-- GERMPLASM MUTAGEN 
+SELECT
+	s.name germplasm_name,
+	cv.name term_type,
+	c.name mutagen
+FROM
+	stock_cvterm sv JOIN cvterm c
+		ON
+		c.cvterm_id = sv.cvterm_id JOIN cv
+		ON
+		cv.cv_id = c.cv_id JOIN stock s
+		ON
+		s.stock_id = sv.stock_id
+WHERE
+	s.name = 'CS65790' and cv.name = 'mutagen_type'
+ORDER BY
+	sv.rank;
+
+-- CHROMOSOMAL CONSTITUTION
+SELECT
+	s.name germplasm_name,
+	cv.name term_type,
+	case when sv.is_not then 'is not a' else 'is a' end as relationship_type,
+	c.name aneploid,
+	cp.name ploidy_property,
+	sp.value ploidy_value
+FROM
+	stock_cvterm sv JOIN cvterm c
+		ON
+		c.cvterm_id = sv.cvterm_id JOIN cv
+		ON
+		cv.cv_id = c.cv_id JOIN stock s
+		ON
+		s.stock_id = sv.stock_id
+		left
+		join stockprop sp
+		on s.stock_id = sp.stock_id
+		left join cvterm cp
+		on sp.type_id = cp.cvterm_id
+		left join cv cvp
+		on cvp.cv_id = cp.cv_id
+		
+WHERE
+	s.name = 'CS65790' and cv.name = 'chromosomal_constitution' and cp.name = 'ploidy' 
+ORDER BY
+	sv.rank;
+
+-- OTHER GERMPLASM PROPERTIES
+
+select s.name, c.name as property_type, sp.value from stock s
+join stockprop sp
+on s.stock_id = sp.stock_id
+join cvterm c
+on sp.type_id = c.cvterm_id
+where s.name = 'CS65790'
+order by rank;
 
 --PEDIGREE 
 -- GEMPLASM BACKGROUND ACCESSION
@@ -116,6 +191,7 @@ ON
 V.stock_id = sb.stock_id
 where sb.name = 'CS65790' and c.name = 'offspring_of' order by str.rank;
 
+-- GENETIC CONTEXT
 -- locus and allele feature accociated with the germplasm 
 select distinct f."name" locus, fo."name" allele,  s.name germplasm_name from feature_relationship fp 
 join feature f

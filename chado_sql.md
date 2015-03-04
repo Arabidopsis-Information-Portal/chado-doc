@@ -51,6 +51,119 @@ WHERE
 |----------------|-----------------|-------------------------------------------------------------------------|--------------------------|--------------------------------------------------------------------------------|----------------------|
 | CS65790        | individual_line | http://arabidopsis.org/servlets/TairObject?type=germplasm&id=6530293244 | 6530293244               | confirmed line isolated from original SALK line; homozygous for the insertion. | Arabidopsis thaliana |
 
+## NASC Stock Number
+
+```
+select s.name germplasm_name, sn.name nasc_stock_number from stock_synonym stn
+join 
+synonym sn
+on stn.synonym_id = sn.synonym_id
+join
+stock s
+on s.stock_id = stn.stock_id
+and s.name = 'CS65790';
+```
+### SQL Output
+| germplasm_name | nasc_stock_number |
+|----------------|-------------------|
+| CS65790        | N65790            |
+
+## Germplasm Descriptor
+
+### Associated Annotation Terms
+```
+SELECT
+	s.name germplasm_name,
+	s.description,
+	cv.name term_type,
+	case when sv.is_not then 'is not a' else 'is a' end as relationship_type,
+	c.name assigned_term
+FROM
+	stock_cvterm sv JOIN cvterm c
+		ON
+		c.cvterm_id = sv.cvterm_id JOIN cv
+		ON
+		cv.cv_id = c.cv_id JOIN stock s
+		ON
+		s.stock_id = sv.stock_id
+WHERE
+	s.name = 'CS65790'
+ORDER BY
+	sv.rank;
+```
+#### SQL Output
+
+| germplasm_name | description                                                                    | term_type                | relationship_type | assigned_term     |
+|----------------|--------------------------------------------------------------------------------|--------------------------|-------------------|-------------------|
+| CS65790        | confirmed line isolated from original SALK line; homozygous for the insertion. | germplasm_type           | is a              | mutant            |
+| CS65790        | confirmed line isolated from original SALK line; homozygous for the insertion. | germplasm_type           | is not a          | natural_variant   |
+| CS65790        | confirmed line isolated from original SALK line; homozygous for the insertion. | germplasm_type           | is a              | has_foreign_dna   |
+| CS65790        | confirmed line isolated from original SALK line; homozygous for the insertion. | chromosomal_constitution | is not a          | aneuploid         |
+| CS65790        | confirmed line isolated from original SALK line; homozygous for the insertion. | germplasm_type           | is a              | has_polymorphisms |
+| CS65790        | confirmed line isolated from original SALK line; homozygous for the insertion. | mutagen_type             | is a              | t-dna_insertion   |
+
+### Germplasm Mutagen
+
+```
+SELECT
+	s.name germplasm_name,
+	cv.name term_type,
+	c.name mutagen
+FROM
+	stock_cvterm sv JOIN cvterm c
+		ON
+		c.cvterm_id = sv.cvterm_id JOIN cv
+		ON
+		cv.cv_id = c.cv_id JOIN stock s
+		ON
+		s.stock_id = sv.stock_id
+WHERE
+	s.name = 'CS65790' and cv.name = 'mutagen_type'
+ORDER BY
+	sv.rank;
+```
+#### SQL Output
+
+| germplasm_name | term_type    | mutagen         |
+|----------------|--------------|-----------------|
+| CS65790        | mutagen_type | t-dna_insertion |
+
+
+### Chromosomal Constitution
+```
+SELECT
+	s.name germplasm_name,
+	cv.name term_type,
+	case when sv.is_not then 'is not a' else 'is a' end as relationship_type,
+	c.name aneploid,
+	cp.name ploidy_property,
+	sp.value ploidy_value
+FROM
+	stock_cvterm sv JOIN cvterm c
+		ON
+		c.cvterm_id = sv.cvterm_id JOIN cv
+		ON
+		cv.cv_id = c.cv_id JOIN stock s
+		ON
+		s.stock_id = sv.stock_id
+		left
+		join stockprop sp
+		on s.stock_id = sp.stock_id
+		left join cvterm cp
+		on sp.type_id = cp.cvterm_id
+		left join cv cvp
+		on cvp.cv_id = cp.cv_id
+		
+WHERE
+	s.name = 'CS65790' and cv.name = 'chromosomal_constitution' and cp.name = 'ploidy' 
+ORDER BY
+	sv.rank;
+```
+#### SQL Output
+
+| germplasm_name | term_type                | relationship_type | aneploid  | ploidy_property | ploidy_value |
+|----------------|--------------------------|-------------------|-----------|-----------------|--------------|
+| CS65790        | chromosomal_constitution | is not a          | aneuploid | ploidy          | 2            |
 
 ## Pedigree
 
@@ -139,6 +252,7 @@ where sb.name = 'CS65790' and c.name = 'offspring_of' order by str.rank;
 |-----------------------|-----------------|----------------|-------------------|-------------|
 | 1                     | individual_line | CS65790        | is a offspring_of | SALK_142526 |
 
+## Genetic Context
 ### Locus and allele feature accociated with the germplasm 
 
 ```
