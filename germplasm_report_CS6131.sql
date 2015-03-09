@@ -41,6 +41,47 @@ FROM
 	WHERE
 	s.name in (SELECT current_setting('global.germplasm_name'));
 	
+		-- Natural Accession Properties
+	SELECT
+    s.name germplasm_name, c.name germplasm_type,
+   o.genus || ' ' || o.species taxon, n.object_stock_name || '' || object_stock_uniquename accession, n.property, n.value
+FROM
+    stock s
+        JOIN dbxref dbx
+        ON
+        s.dbxref_id = dbx.dbxref_id JOIN db
+        ON
+        db.db_id = dbx.db_id 
+        join organism o
+        on
+        o.organism_id = s.organism_id
+        join 
+        cvterm c 
+        on c.cvterm_id = s.type_id
+        left join
+        (
+        select sb.stock_id subject_stock_id, sb.name subject_name, so.stock_id object_stock_id, so.name object_stock_name, so.uniquename object_stock_uniquename, sprc.name property, spr.value  from stock_relationship sp
+        join stock sb
+        on sb.stock_id = sp.subject_id
+        join stock so
+        on so.stock_id = sp.object_id
+        join cvterm cspo
+        on cspo.cvterm_id = sp.type_id
+        join
+        cvterm cso
+        on cso.cvterm_id = so.type_id
+        left join
+        stockprop spr
+        on spr.stock_id = so.stock_id
+        join cvterm sprc
+        on sprc.cvterm_id = spr.type_id
+        where cspo.name = 'associated_with' and cso.name = 'ecotype'
+            ) n
+            on n.subject_stock_id = s.stock_id
+           
+    WHERE
+    s.name in (SELECT current_setting('global.germplasm_name'));
+    
 -- GERMPLASM TAIR ACCESSIONS
 
     SELECT
