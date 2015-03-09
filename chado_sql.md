@@ -787,7 +787,7 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name =
 
 ###<a name="allele-info"></a>Allele Information
 
-#### Locus and Allele Feature/Allele Mutagen accociated with the germplasm polymorphisms
+#### Locus and Allele Feature/Allele Mutagen associated with the germplasm polymorphisms
 
 ```
 select distinct f."name" locus, fo."name" allele,  m.property, m.mutagen, s.name germplasm_name from feature_relationship fp 
