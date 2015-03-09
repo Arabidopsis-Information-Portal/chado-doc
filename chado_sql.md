@@ -1490,6 +1490,12 @@ att.feature_id = f.feature_id and f.type_id = att.feature_type_id
 where s.name in (SELECT current_setting('global.germplasm_name')) and fc.name='reference_allele';
 ```
 
+#### SQL Output
+| reference_allele            | feature_type     | attribution_type | submitter_name | date                | publication | url  | accession | germplasm_name |
+|-----------------------------|------------------|------------------|----------------|---------------------|-------------|------|-----------|----------------|
+| 4CL1-1:reference allele:Col | reference_allele | submitted_by     | Joseph Ecker   | 2009-08-11 23:00:00 | null        | null | null      | CS65790        |
+
+
 
 ###<a name="allele-phenotype"></a>Allele/Phenotype Associations
 
