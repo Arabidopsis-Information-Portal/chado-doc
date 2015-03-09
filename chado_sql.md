@@ -69,7 +69,7 @@ SELECT
 	s.name germplasm_name, c.name germplasm_type,
 	db.urlprefix || dbx.accession germplasm_tair_accession_url,
 	dbx.accession germplasm_tair_accession,
-	s.description, o.genus || ' ' || o.species taxon
+	s.description, o.genus || ' ' || o.species taxon, n.object_stock_name || '' || object_stock_uniquename accession
 FROM
 	stock s
 		JOIN dbxref dbx
@@ -83,14 +83,29 @@ FROM
 		join 
 		cvterm c 
 		on c.cvterm_id = s.type_id
+		left join
+		(
+		select sb.stock_id subject_stock_id, sb.name subject_name, so.stock_id object_stock_id, so.name object_stock_name, so.uniquename object_stock_uniquename  from stock_relationship sp
+		join stock sb
+		on sb.stock_id = sp.subject_id
+		join stock so
+		on so.stock_id = sp.object_id
+		join cvterm cspo
+		on cspo.cvterm_id = sp.type_id
+		join
+		cvterm cso
+		on cso.cvterm_id = so.type_id
+		where cspo.name = 'associated_with' and cso.name = 'ecotype'
+			) n
+			on n.subject_stock_id = s.stock_id
 	WHERE
 	s.name in (SELECT current_setting('global.germplasm_name'));
 ```
 #### SQL Output
 
-| germplasm_name | germplasm_type  | germplasm_tair_accession_url                                            | germplasm_tair_accession | description                                                                    | taxon                |
-|----------------|-----------------|-------------------------------------------------------------------------|--------------------------|--------------------------------------------------------------------------------|----------------------|
-| CS65790        | individual_line | http://arabidopsis.org/servlets/TairObject?type=germplasm&id=6530293244 | 6530293244               | confirmed line isolated from original SALK line; homozygous for the insertion. | Arabidopsis thaliana |
+| germplasm_name | germplasm_type  | germplasm_tair_accession_url                                            | germplasm_tair_accession | description                                                                    | taxon                | accession |
+|----------------|-----------------|-------------------------------------------------------------------------|--------------------------|--------------------------------------------------------------------------------|----------------------|-----------|
+| CS65790        | individual_line | http://arabidopsis.org/servlets/TairObject?type=germplasm&id=6530293244 | 6530293244               | confirmed line isolated from original SALK line; homozygous for the insertion. | Arabidopsis thaliana | null      |
 
 ### Germplasm TAIR Accessions
 
