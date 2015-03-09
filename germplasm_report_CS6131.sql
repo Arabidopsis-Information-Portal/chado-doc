@@ -1,5 +1,5 @@
 --SET CURRRENT SESSION GERMPLASM INFO
-set global.germplasm_name= 'CS65790';
+set global.germplasm_name= 'CS6131';
 
 --validate current germplasm name has been set
 SELECT current_setting('global.germplasm_name'); 
