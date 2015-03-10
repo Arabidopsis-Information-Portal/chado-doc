@@ -1356,10 +1356,11 @@ left join
 dbxref dbx
 on
 dbx.dbxref_id = fdbx.dbxref_id
-join
+left join
 db on
 db.db_id = dbx.db_id
 where s.name in (SELECT current_setting('global.germplasm_name')) and co.name = 'transposable_element_flanking_region';
+
 ```
 
 #### SQL Output
@@ -1488,7 +1489,7 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and co.name = 
 #### Allele Feature Attribution
 
 ```
-select fo.feature_id allele_feature_id, fo.name allele, att.attribution_type, att.submitter_name, att.date, att.uniquename publication, att.url, att.accession, s.name germplasm_name from feature_relationship fp 
+select fo.feature_id allele_feature_id, fo.name allele, att.attribution_type, att.submitter_name, att.date, s.name germplasm_name from feature_relationship fp 
 join feature f
 on f.feature_id = fp.object_id
 join feature fo
@@ -1533,15 +1534,14 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name =
 
 #### SQL Output
 
-| allele_feature_id | allele | attribution_type | submitter_name | date                | publication                                                                                                                                   | url                                         | accession | germplasm_name |
-|-------------------|--------|------------------|----------------|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|-----------|----------------|
-| 779226            | 4CL1-1 | submitted_by     | GenBank        | 2007-10-22 23:00:00 | SALK_142526.46.30.x Arabidopsis thaliana TDNA insertion lines Arabidopsis thaliana genomic clone SALK_142526.46.30.x, genomic survey sequence | http://www.ncbi.nlm.nih.gov/nucgss/CC180175 | CC180175  | CS65790        |
-| 779226            | 4CL1-1 | submitted_by     | Joseph Ecker   | 2007-10-22 23:00:00 | SALK_142526.46.30.x Arabidopsis thaliana TDNA insertion lines Arabidopsis thaliana genomic clone SALK_142526.46.30.x, genomic survey sequence | http://www.ncbi.nlm.nih.gov/nucgss/CC180175 | CC180175  | CS65790        |
-
+| allele_feature_id | allele | attribution_type | submitter_name | date                | germplasm_name |
+|-------------------|--------|------------------|----------------|---------------------|----------------|
+| 779226            | 4CL1-1 | submitted_by     | GenBank        | 2007-10-22 23:00:00 | CS65790        |
+| 779226            | 4CL1-1 | submitted_by     | Joseph Ecker   | 2007-10-22 23:00:00 | CS65790        |
 
 #### Associated Reference Polymorphism
 ```
-select cb.name subject_feature_type, fs.uniquename subject_feature, cfp.name association_type, fo.name feature_name, co.name object_feature_type, os.name reference_ecotype from feature_relationship fp
+select cb.name subject_feature_type, fs.uniquename subject_feature, cfp.name association_type, fo.name feature_name, co.name object_feature_type, os.name reference_ecotype, fo.residues polymorphic_sequence, fo.seqlen sequence_length from feature_relationship fp
 join feature fo
 on fo.feature_id = fp.object_id
 join
@@ -1576,9 +1576,9 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and co.name='r
 
 #### SQL Output
 
-| subject_feature_type | subject_feature | association_type | feature_name                | object_feature_type | reference_ecotype |
-|----------------------|-----------------|------------------|-----------------------------|---------------------|-------------------|
-| allele               | 4CL1-1          | associated_with  | 4CL1-1:reference allele:Col | reference_allele    | COLUMBIA          |
+| subject_feature_type | subject_feature | association_type | feature_name                | object_feature_type | reference_ecotype | polymorphic_sequence | sequence_length |
+|----------------------|-----------------|------------------|-----------------------------|---------------------|-------------------|----------------------|-----------------|
+| allele               | 4CL1-1          | associated_with  | 4CL1-1:reference allele:Col | reference_allele    | COLUMBIA          | null                 | null            |
 
 
 #### Reference Allele Attribution

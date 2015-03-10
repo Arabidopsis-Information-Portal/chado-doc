@@ -1006,7 +1006,7 @@ left join
 dbxref dbx
 on
 dbx.dbxref_id = fdbx.dbxref_id
-join
+left join
 db on
 db.db_id = dbx.db_id
 where s.name in (SELECT current_setting('global.germplasm_name')) and co.name = 'transposable_element_flanking_region';
@@ -1110,7 +1110,7 @@ on fa.feature_id = fo.feature_id
 where s.name in (SELECT current_setting('global.germplasm_name')) and co.name = 'transposable_element_flanking_region';
 
 --ALLELE ATTRIBUTION
-select fo.feature_id allele_feature_id, fo.name allele, att.attribution_type, att.submitter_name, att.date, att.uniquename publication, att.url, att.accession, s.name germplasm_name from feature_relationship fp 
+select fo.feature_id allele_feature_id, fo.name allele, att.attribution_type, att.submitter_name, att.date, s.name germplasm_name from feature_relationship fp 
 join feature f
 on f.feature_id = fp.object_id
 join feature fo
@@ -1154,7 +1154,7 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name =
 
 
 --ASSOCIATED REFERENCE POLYMORPHISM 
-select cb.name subject_feature_type, fs.uniquename subject_feature, cfp.name association_type, fo.name feature_name, co.name object_feature_type, os.name reference_ecotype from feature_relationship fp
+select cb.name subject_feature_type, fs.uniquename subject_feature, cfp.name association_type, fo.name feature_name, co.name object_feature_type, os.name reference_ecotype, fo.residues polymorphic_sequence, fo.seqlen sequence_length from feature_relationship fp
 join feature fo
 on fo.feature_id = fp.object_id
 join
