@@ -69,7 +69,7 @@ SELECT
 	s.name germplasm_name, c.name germplasm_type,
 	db.urlprefix || dbx.accession germplasm_tair_accession_url,
 	dbx.accession germplasm_tair_accession,
-	s.description, o.genus || ' ' || o.species taxon, n.object_stock_name || '' || object_stock_uniquename accession
+	s.description, o.genus || ' ' || o.species taxon, n.object_stock_name || ' ' || object_stock_uniquename accession
 FROM
 	stock s
 		JOIN dbxref dbx
@@ -111,7 +111,7 @@ FROM
 ```
 SELECT
     s.name germplasm_name, c.name germplasm_type,
-   o.genus || ' ' || o.species taxon, n.object_stock_name || '' || object_stock_uniquename accession, n.property, n.value
+   o.genus || ' ' || o.species taxon, n.object_stock_name || ' ' || object_stock_uniquename accession, n.property, n.value
 FROM
     stock s
         JOIN dbxref dbx
@@ -148,13 +148,13 @@ FROM
            
     WHERE
     s.name in (SELECT current_setting('global.germplasm_name'));
+	
 ```
 | germplasm_name | germplasm_type  | taxon                | accession | property | value        |
 |----------------|-----------------|----------------------|-----------|----------|--------------|
-| CS934          | individual_line | Arabidopsis thaliana | Aa-0Aua   | country  | Germany      |
-| CS934          | individual_line | Arabidopsis thaliana | Aa-0Aua   | location | Aua/Rhon     |
-| CS934          | individual_line | Arabidopsis thaliana | Aa-0Aua   | habitat  | field border |
-
+| CS934          | individual_line | Arabidopsis thaliana | Aa-0 Aua  | country  | Germany      |
+| CS934          | individual_line | Arabidopsis thaliana | Aa-0 Aua  | location | Aua/Rhon     |
+| CS934          | individual_line | Arabidopsis thaliana | Aa-0 Aua  | habitat  | field border |
 ### Germplasm TAIR Accessions
 
 ```
@@ -1202,11 +1202,84 @@ where
 s.name in (SELECT current_setting('global.germplasm_name'))
 order by fg."rank";
 ```
+#### SQL Output
 
+| genotype_id | genotype_type   | genotype_unique_name                 | genotype_to_feature_association_type | feature_name        | feature_type                        |
+|-------------|-----------------|--------------------------------------|--------------------------------------|---------------------|-------------------------------------|
+| 1           | t-dna_insertion | SALK_142526.46.30.X|AT1G51680|4CL1-1 | carried_in                           | SALK_142526.46.30.X | transposable_element_insertion_site |
+| 1           | t-dna_insertion | SALK_142526.46.30.X|AT1G51680|4CL1-1 | associated_with                      | 4CL1-1              | allele                              |
+| 1           | t-dna_insertion | SALK_142526.46.30.X|AT1G51680|4CL1-1 | associated_with                      | AT1G51680           | gene                                |
+
+#### Alelle Chromosome
+```
+select g.genotype_id, c.name genotype_type,  g.uniquename genotype_unique_name, cf.name genotype_to_feature_association_type, coalesce(chr_f.name, 'N/A') chromosome, f.name feature_name, ft.name feature_type from feature_genotype fg
+join genotype g
+on fg.genotype_id = g.genotype_id
+join cvterm c
+on c.cvterm_id = g.type_id
+join cvterm cf
+on cf.cvterm_id = fg.cvterm_id
+join feature f on
+f.feature_id = fg.feature_id
+join
+cvterm ft
+on ft.cvterm_id = f.type_id
+join
+stock_genotype sg
+on sg.genotype_id = g.genotype_id
+join
+stock s
+on s.stock_id = sg.stock_id
+left join feature chr_f
+on chr_f.feature_id = fg.chromosome_id
+where 
+s.name in (SELECT current_setting('global.germplasm_name')) and ft.name = 'allele'
+order by fg."rank";
+```
+
+#### SQL Output
+| genotype_id | genotype_type   | genotype_unique_name                 | genotype_to_feature_association_type | chromosome | feature_name | feature_type |
+|-------------|-----------------|--------------------------------------|--------------------------------------|------------|--------------|--------------|
+| 1           | t-dna_insertion | SALK_142526.46.30.X:AT1G51680:4CL1-1 | associated_with                      | Chr1       | 4CL1-1       | allele       |
+
+
+#### Allele - Caused By Insertion
+```
+select f_chr.name chromosome, cb.name allele_feature_type, fs.name allele, cfp.name association_type, fo.name feature_name, co.name caused_by_feature_type from feature_relationship fp
+join feature fo
+on fo.feature_id = fp.object_id
+join
+feature fs
+on fs.feature_id = fp.subject_id
+join
+cvterm cfp
+on cfp.cvterm_id = fp.type_id
+join 
+cvterm co
+on
+co.cvterm_id = fo.type_id
+join
+cvterm cb
+on cb.cvterm_id = fs.type_id
+join feature_genotype fg
+on fg.feature_id = fs.feature_id
+join genotype g
+on g.genotype_id = fg.genotype_id
+join stock_genotype sg
+on sg.genotype_id = fg.genotype_id
+join stock s 
+on s.stock_id = sg.stock_id
+left join 
+feature f_chr
+on f_chr.feature_id = fg.chromosome_id
+where s.name in (SELECT current_setting('global.germplasm_name')) and cfp.name = 'caused_by_insertion';
+```
 #### SQL Output
 | chromosome | allele_feature_type | allele | association_type    | feature_name        | caused_by_feature_type |
 |------------|---------------------|--------|---------------------|---------------------|------------------------|
 | Chr1       | allele              | 4CL1-1 | caused_by_insertion | SALK_142526.46.30.X | t-dna_transposon       |
+
+#### 
 
 #### Associated Allele Genomic Features
 
@@ -1612,7 +1685,7 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and cl.name = 
 #### SQL Output
 | germplasm_name | phenotype             | phenotype_accession | attribute   | evidence_type | publication  | pyear | title | allele_feature_name | feature_type | locus     | locus_feature_type |
 |----------------|-----------------------|---------------------|-------------|---------------|--------------|-------|-------|---------------------|--------------|-----------|--------------------|
-| CS65790        | No visible phenotype. | 6054|6030203590     | unspecified | no_evidence   | unattributed | null  | null  | 4CL1-1              | allele       | AT1G51680 | gene               |
+| CS65790        | No visible phenotype. | 6054:6030203590     | unspecified | no_evidence   | unattributed | null  | null  | 4CL1-1              | allele       | AT1G51680 | gene               |
 
 
 ##<a name="sql-scripts"></a>Precompiled SQL Scripts

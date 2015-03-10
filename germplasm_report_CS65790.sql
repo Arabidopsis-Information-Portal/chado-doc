@@ -1,6 +1,7 @@
 --SET CURRRENT SESSION GERMPLASM INFO
 set global.germplasm_name= 'CS65790';
 
+
 --validate current germplasm name has been set
 SELECT current_setting('global.germplasm_name'); 
 
@@ -9,7 +10,7 @@ SELECT
 	s.name germplasm_name, c.name germplasm_type,
 	db.urlprefix || dbx.accession germplasm_tair_accession_url,
 	dbx.accession germplasm_tair_accession,
-	s.description, o.genus || ' ' || o.species taxon, n.object_stock_name || '' || object_stock_uniquename accession
+	s.description, o.genus || ' ' || o.species taxon, n.object_stock_name || ' ' || object_stock_uniquename accession
 FROM
 	stock s
 		JOIN dbxref dbx
@@ -41,10 +42,11 @@ FROM
 	WHERE
 	s.name in (SELECT current_setting('global.germplasm_name'));
 	
+	
 	-- Natural Accession Properties
 	SELECT
     s.name germplasm_name, c.name germplasm_type,
-   o.genus || ' ' || o.species taxon, n.object_stock_name || '' || object_stock_uniquename accession, n.property, n.value
+   o.genus || ' ' || o.species taxon, n.object_stock_name || ' ' || object_stock_uniquename accession, n.property, n.value
 FROM
     stock s
         JOIN dbxref dbx
@@ -887,7 +889,34 @@ where
 s.name in (SELECT current_setting('global.germplasm_name'))
 order by fg."rank";
 
---ALLELE DETAILS
+-- ALLELE Chromosome
+
+select g.genotype_id, c.name genotype_type,  g.uniquename genotype_unique_name, cf.name genotype_to_feature_association_type, coalesce(chr_f.name, 'N/A') chromosome, f.name feature_name, ft.name feature_type from feature_genotype fg
+join genotype g
+on fg.genotype_id = g.genotype_id
+join cvterm c
+on c.cvterm_id = g.type_id
+join cvterm cf
+on cf.cvterm_id = fg.cvterm_id
+join feature f on
+f.feature_id = fg.feature_id
+join
+cvterm ft
+on ft.cvterm_id = f.type_id
+join
+stock_genotype sg
+on sg.genotype_id = g.genotype_id
+join
+stock s
+on s.stock_id = sg.stock_id
+left join feature chr_f
+on chr_f.feature_id = fg.chromosome_id
+where 
+s.name in (SELECT current_setting('global.germplasm_name')) and ft.name = 'allele'
+order by fg."rank";
+
+
+--ALLELE DETAILS - CAUSED BY INSERTION
 
 select f_chr.name chromosome, cb.name allele_feature_type, fs.name allele, cfp.name association_type, fo.name feature_name, co.name caused_by_feature_type from feature_relationship fp
 join feature fo
