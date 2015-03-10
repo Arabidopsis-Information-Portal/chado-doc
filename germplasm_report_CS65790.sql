@@ -275,6 +275,56 @@ ON
 V.stock_id = sb.stock_id
 where sb.name in (SELECT current_setting('global.germplasm_name')) and c.name = 'offspring_of' order by str.rank;
 
+
+-- Child lines/associated locus
+SELECT str.stock_relationship_id, soc.name, sbc.name as child_germplasm_type, sb.uniquename as child_germplasm_name, ' is a ' || c.name as relationship, so.name as parent_line, sbc.name parent_type,  v.locus  child_locus_associations,cc.name generative_method from STOCK_RELATIONSHIP str
+join stock so
+on 
+so.stock_id = str.object_id 
+join 
+cvterm c
+on 
+c.cvterm_id = str.type_id
+join
+stock sb
+on sb.stock_id = str.subject_id
+join 
+cvterm sbc
+on sbc.cvterm_id = sb.type_id
+join 
+cvterm soc
+on soc.cvterm_id = so.type_id
+left join
+stock_relationship_cvterm strc
+on str.stock_relationship_id = strc.stock_relationship_id
+left join 
+cvterm cc
+on 
+cc.cvterm_id = strc.cvterm_id
+left join 
+(
+select distinct f."name" locus, fo."name" allele,  s.name germplasm_name, s.stock_id from feature_relationship fp 
+join feature f
+on f.feature_id = fp.object_id
+join feature fo
+on fo.feature_id = fp.subject_id
+join feature_genotype fg
+on fg.feature_id = fo.feature_id
+join genotype g
+on fg.genotype_id = g.genotype_id
+join stock_genotype sg
+on sg.genotype_id = g.genotype_id
+join stock s
+on s.stock_id = sg.stock_id
+join cvterm fc
+on fc.cvterm_id = f.type_id
+where s.name in (SELECT current_setting('global.germplasm_name')) and fc.name = 'gene'
+) V
+ON
+V.stock_id = sb.stock_id
+where so.name in (SELECT current_setting('global.germplasm_name')) and c.name = 'offspring_of' order by str.rank;
+
+
 -- Locus and allele feature/allele mutagen accociated with the germplasm 
 select distinct f."name" locus, fo."name" allele,  m.property, m.mutagen, s.name germplasm_name from feature_relationship fp 
 join feature f

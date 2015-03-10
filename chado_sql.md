@@ -395,61 +395,7 @@ where so.name in (SELECT current_setting('global.germplasm_name')) and c.name  l
 
 
 
-### Parent Lines
-
-```
-SELECT str.stock_relationship_id, sbc.name as germplasm_type, sb.uniquename as germplasm_name, ' is a ' || c.name as relationship, so.name as parent_line, sbc.name parent_type,  v.locus  parent_locus_associations,cc.name generative_method from STOCK_RELATIONSHIP str
-join stock so
-on 
-so.stock_id = str.object_id 
-join 
-cvterm c
-on 
-c.cvterm_id = str.type_id
-join
-stock sb
-on sb.stock_id = str.subject_id
-join 
-cvterm sbc
-on sbc.cvterm_id = sb.type_id
-join 
-cvterm soc
-on soc.cvterm_id = so.type_id
-left join
-stock_relationship_cvterm strc
-on str.stock_relationship_id = strc.stock_relationship_id
-left join 
-cvterm cc
-on 
-cc.cvterm_id = strc.cvterm_id
-left join 
-(
-select distinct f."name" locus, fo."name" allele,  s.name germplasm_name, s.stock_id from feature_relationship fp 
-join feature f
-on f.feature_id = fp.object_id
-join feature fo
-on fo.feature_id = fp.subject_id
-join feature_genotype fg
-on fg.feature_id = fo.feature_id
-join genotype g
-on fg.genotype_id = g.genotype_id
-join stock_genotype sg
-on sg.genotype_id = g.genotype_id
-join stock s
-on s.stock_id = sg.stock_id
-join cvterm fc
-on fc.cvterm_id = f.type_id
-where s.name in (SELECT current_setting('global.germplasm_name')) and fc.name = 'gene'
-) V
-ON
-V.stock_id = sb.stock_id
-where sb.name in (SELECT current_setting('global.germplasm_name')) and c.name = 'offspring_of' order by str.rank;
-```
-#### SQL Output
-| stock_relationship_id | germplasm_type  | germplasm_name | relationship      | parent_line |
-|-----------------------|-----------------|----------------|-------------------|-------------|
-| 1                     | individual_line | CS65790        | is a offspring_of | SALK_142526 |
-
+### Parent/Child Lines
 
 #### Parent Lines/Associated Locus
 
@@ -507,6 +453,63 @@ where sb.name in (SELECT current_setting('global.germplasm_name')) and c.name = 
 |-----------------------|-----------------|----------------|-------------------|-------------|-----------------|---------------------------|-------------------|
 | 2                     | individual_line | CS65790        | is a offspring_of | CS6000      | individual_line | AT1G51680                 | null              |
 | 1                     | individual_line | CS65790        | is a offspring_of | SALK_142526 | individual_line | AT1G51680                 | puritative        |
+
+
+#### Child Lines/Associated Locus (valid for CS6700)
+```
+SELECT str.stock_relationship_id, soc.name, sbc.name as child_germplasm_type, sb.uniquename as child_germplasm_name, ' is a ' || c.name as relationship, so.name as parent_line, sbc.name parent_type,  v.locus  child_locus_associations,cc.name generative_method from STOCK_RELATIONSHIP str
+join stock so
+on 
+so.stock_id = str.object_id 
+join 
+cvterm c
+on 
+c.cvterm_id = str.type_id
+join
+stock sb
+on sb.stock_id = str.subject_id
+join 
+cvterm sbc
+on sbc.cvterm_id = sb.type_id
+join 
+cvterm soc
+on soc.cvterm_id = so.type_id
+left join
+stock_relationship_cvterm strc
+on str.stock_relationship_id = strc.stock_relationship_id
+left join 
+cvterm cc
+on 
+cc.cvterm_id = strc.cvterm_id
+left join 
+(
+select distinct f."name" locus, fo."name" allele,  s.name germplasm_name, s.stock_id from feature_relationship fp 
+join feature f
+on f.feature_id = fp.object_id
+join feature fo
+on fo.feature_id = fp.subject_id
+join feature_genotype fg
+on fg.feature_id = fo.feature_id
+join genotype g
+on fg.genotype_id = g.genotype_id
+join stock_genotype sg
+on sg.genotype_id = g.genotype_id
+join stock s
+on s.stock_id = sg.stock_id
+join cvterm fc
+on fc.cvterm_id = f.type_id
+where s.name in (SELECT current_setting('global.germplasm_name')) and fc.name = 'gene'
+) V
+ON
+V.stock_id = sb.stock_id
+where so.name in (SELECT current_setting('global.germplasm_name')) and c.name = 'offspring_of' order by str.rank;
+```
+
+#### SQL Output
+
+| stock_relationship_id | name            | child_germplasm_type | child_germplasm_name | relationship      | parent_line | parent_type     | child_locus_associations | generative_method      |
+|-----------------------|-----------------|----------------------|----------------------|-------------------|-------------|-----------------|--------------------------|------------------------|
+| 33                    | individual_line | individual_line      | CS28243              | is a offspring_of | CS6700      | individual_line | null                     | single_plant_selection |
 
 
 ###<a name="germplasm-locus"></a>Germplasm/Locus Associations
