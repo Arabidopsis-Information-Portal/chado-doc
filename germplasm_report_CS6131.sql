@@ -1,6 +1,7 @@
 --SET CURRRENT SESSION GERMPLASM INFO
 set global.germplasm_name= 'CS6131';
 
+
 --validate current germplasm name has been set
 SELECT current_setting('global.germplasm_name'); 
 
@@ -274,6 +275,56 @@ ON
 V.stock_id = sb.stock_id
 where sb.name in (SELECT current_setting('global.germplasm_name')) and c.name = 'offspring_of' order by str.rank;
 
+
+-- Child lines/associated locus
+SELECT str.stock_relationship_id, soc.name, sbc.name as child_germplasm_type, sb.uniquename as child_germplasm_name, ' is a ' || c.name as relationship, so.name as parent_line, sbc.name parent_type,  v.locus  child_locus_associations,cc.name generative_method from STOCK_RELATIONSHIP str
+join stock so
+on 
+so.stock_id = str.object_id 
+join 
+cvterm c
+on 
+c.cvterm_id = str.type_id
+join
+stock sb
+on sb.stock_id = str.subject_id
+join 
+cvterm sbc
+on sbc.cvterm_id = sb.type_id
+join 
+cvterm soc
+on soc.cvterm_id = so.type_id
+left join
+stock_relationship_cvterm strc
+on str.stock_relationship_id = strc.stock_relationship_id
+left join 
+cvterm cc
+on 
+cc.cvterm_id = strc.cvterm_id
+left join 
+(
+select distinct f."name" locus, fo."name" allele,  s.name germplasm_name, s.stock_id from feature_relationship fp 
+join feature f
+on f.feature_id = fp.object_id
+join feature fo
+on fo.feature_id = fp.subject_id
+join feature_genotype fg
+on fg.feature_id = fo.feature_id
+join genotype g
+on fg.genotype_id = g.genotype_id
+join stock_genotype sg
+on sg.genotype_id = g.genotype_id
+join stock s
+on s.stock_id = sg.stock_id
+join cvterm fc
+on fc.cvterm_id = f.type_id
+where s.name in (SELECT current_setting('global.germplasm_name')) and fc.name = 'gene'
+) V
+ON
+V.stock_id = sb.stock_id
+where so.name in (SELECT current_setting('global.germplasm_name')) and c.name = 'offspring_of' order by str.rank;
+
+
 -- Locus and allele feature/allele mutagen accociated with the germplasm 
 select distinct f."name" locus, fo."name" allele,  m.property, m.mutagen, s.name germplasm_name from feature_relationship fp 
 join feature f
@@ -384,26 +435,32 @@ SELECT
 	c.name zygosity,
 	db.urlprefix || dbx.accession tair_accession_url,
 	dbx.accession tair_accession
+	,
+	cv.name
 FROM
 	stock_genotype sg
 	left join
 	cvterm c 
 	on c.cvterm_id = sg.cvterm_id
+	left
 	join stock s
 	on s.stock_id = sg.stock_id
 	join genotype g
 	on g.genotype_id = sg.genotype_id
+	left 
 	join
 	cvterm cvg
 	on cvg.cvterm_id = g.type_id
+	left
 	join cv 
 	on cv.cv_id = c.cv_id 
+	left
 	join
 	dbxref dbx
 	on dbx.dbxref_id = g.dbxref_id
-	join
+	left join
 	db on db.db_id = dbx.db_id
-	where s.name in (SELECT current_setting('global.germplasm_name')) and cv.name = 'genotype_type';
+	where s.name in (SELECT current_setting('global.germplasm_name'));
 	
 --POLYMORHISM PROPERTIES
 select g.name genotype_name, cgp.name property, gp.value property_value from genotype g
@@ -678,6 +735,47 @@ select f.feature_id, cf.name feature_type, f.uniquename, fcp.value property, c.n
      on cf.cvterm_id = f.type_id
      where
      fcp.VALUE = 'allele_type'
+) m
+on m.feature_id = fo.feature_id
+where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name = 'allele' and fc.name = 'gene';
+
+-- Allele Inheritance Type
+select fo.name allele,  m.property, coalesce(m.value, 'N/A') allele_type, s.name germplasm_name from feature_relationship fp 
+join feature f
+on f.feature_id = fp.object_id
+join feature fo
+on fo.feature_id = fp.subject_id
+join feature_genotype fg
+on fg.feature_id = fo.feature_id
+join genotype g
+on fg.genotype_id = g.genotype_id
+join stock_genotype sg
+on sg.genotype_id = g.genotype_id
+join stock s
+on s.stock_id = sg.stock_id
+join cvterm fc
+on fc.cvterm_id = f.type_id
+join cvterm fco
+on fco.cvterm_id = fo.type_id
+left join
+(
+select f.feature_id, cf.name feature_type, f.uniquename, fcp.value property, c.name  as value from feature_cvterm fc 
+     join feature f
+     on fc.feature_id = f.feature_id
+     join 
+     feature_cvtermprop fcp
+     on fcp.feature_cvterm_id = fc.feature_cvterm_id
+     join 
+     cvterm cvtp
+     on 
+     cvtp.cvterm_id = fcp.type_id
+     join cvterm c
+     on c.cvterm_id = fc.cvterm_id
+     join
+     cvterm cf
+     on cf.cvterm_id = f.type_id
+     where
+     fcp.VALUE = 'inheritance_type'
 ) m
 on m.feature_id = fo.feature_id
 where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name = 'allele' and fc.name = 'gene';
@@ -1005,7 +1103,7 @@ left join
 dbxref dbx
 on
 dbx.dbxref_id = fdbx.dbxref_id
-join
+left join
 db on
 db.db_id = dbx.db_id
 where s.name in (SELECT current_setting('global.germplasm_name')) and co.name = 'transposable_element_flanking_region';
@@ -1109,7 +1207,7 @@ on fa.feature_id = fo.feature_id
 where s.name in (SELECT current_setting('global.germplasm_name')) and co.name = 'transposable_element_flanking_region';
 
 --ALLELE ATTRIBUTION
-select fo.feature_id allele_feature_id, fo.name allele, att.attribution_type, att.submitter_name, att.date, att.uniquename publication, att.url, att.accession, s.name germplasm_name from feature_relationship fp 
+select fo.feature_id allele_feature_id, fo.name allele, att.attribution_type, att.submitter_name, att.date, s.name germplasm_name from feature_relationship fp 
 join feature f
 on f.feature_id = fp.object_id
 join feature fo
@@ -1153,7 +1251,7 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name =
 
 
 --ASSOCIATED REFERENCE POLYMORPHISM 
-select cb.name subject_feature_type, fs.uniquename subject_feature, cfp.name association_type, fo.name feature_name, co.name object_feature_type, os.name reference_ecotype from feature_relationship fp
+select cb.name subject_feature_type, fs.uniquename subject_feature, cfp.name association_type, fo.name feature_name, co.name object_feature_type, os.name reference_ecotype, fo.residues polymorphic_sequence, fo.seqlen sequence_length from feature_relationship fp
 join feature fo
 on fo.feature_id = fp.object_id
 join

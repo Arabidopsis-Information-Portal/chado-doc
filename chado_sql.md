@@ -671,26 +671,32 @@ SELECT
 	c.name zygosity,
 	db.urlprefix || dbx.accession tair_accession_url,
 	dbx.accession tair_accession
+	,
+	cv.name
 FROM
 	stock_genotype sg
 	left join
 	cvterm c 
 	on c.cvterm_id = sg.cvterm_id
+	left
 	join stock s
 	on s.stock_id = sg.stock_id
 	join genotype g
 	on g.genotype_id = sg.genotype_id
+	left 
 	join
 	cvterm cvg
 	on cvg.cvterm_id = g.type_id
+	left
 	join cv 
 	on cv.cv_id = c.cv_id 
+	left
 	join
 	dbxref dbx
 	on dbx.dbxref_id = g.dbxref_id
-	join
+	left join
 	db on db.db_id = dbx.db_id
-	where s.name in (SELECT current_setting('global.germplasm_name')) and cv.name = 'genotype_type';
+	where s.name in (SELECT current_setting('global.germplasm_name'));
 ```
 
 #### SQL Output
@@ -1050,7 +1056,49 @@ where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name =
 |--------|----------|-------------|----------------|
 | 4CL1-1 | null     | N/A         | CS65790        |
 
+#### Allele Inheritance Type
 
+```
+select fo.name allele,  m.property, coalesce(m.value, 'N/A') allele_type, s.name germplasm_name from feature_relationship fp 
+join feature f
+on f.feature_id = fp.object_id
+join feature fo
+on fo.feature_id = fp.subject_id
+join feature_genotype fg
+on fg.feature_id = fo.feature_id
+join genotype g
+on fg.genotype_id = g.genotype_id
+join stock_genotype sg
+on sg.genotype_id = g.genotype_id
+join stock s
+on s.stock_id = sg.stock_id
+join cvterm fc
+on fc.cvterm_id = f.type_id
+join cvterm fco
+on fco.cvterm_id = fo.type_id
+left join
+(
+select f.feature_id, cf.name feature_type, f.uniquename, fcp.value property, c.name  as value from feature_cvterm fc 
+     join feature f
+     on fc.feature_id = f.feature_id
+     join 
+     feature_cvtermprop fcp
+     on fcp.feature_cvterm_id = fc.feature_cvterm_id
+     join 
+     cvterm cvtp
+     on 
+     cvtp.cvterm_id = fcp.type_id
+     join cvterm c
+     on c.cvterm_id = fc.cvterm_id
+     join
+     cvterm cf
+     on cf.cvterm_id = f.type_id
+     where
+     fcp.VALUE = 'inheritance_type'
+) m
+on m.feature_id = fo.feature_id
+where s.name in (SELECT current_setting('global.germplasm_name')) and fco.name = 'allele' and fc.name = 'gene';
+```
 ###<a name="allele-genomic"></a>Allele/Genomic Features Associations
 
 ### Locus/Allele/Genes Name/Full Name features associated with the germplasm 
