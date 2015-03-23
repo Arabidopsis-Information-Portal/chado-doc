@@ -1,7 +1,7 @@
 # Content
-
-* [Araport Static ERD](#araport-static-erd)
-* [TAIR Static ERD](#tair-static-erd)
+ **[Araport Static ERD](#araport-static-erd)**
+ 
+ **[TAIR Static ERD](#tair-static-erd)**
 
 ##<a name="araport-static-erd"></a>Araport Static ERD 
 
