@@ -16,8 +16,5 @@
 * Data Model Design
 	* [Araport Chado Extension Data Model](datamodel_erd/araport_chado_extension.pdf)
 	*  ERD Diagrams
-	* [Static ERD Images](static_erd.md)
+		* [Static ERD Images](static_erd.md)
 	
-	* Web ERD 
-		* [Araport Chado ERD](datamodel_erd/site/araport_chado/index.htm)	
-		* [TAIR ERD](datamodel_erd/site/tair/index.htm)
