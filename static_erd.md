@@ -8,7 +8,7 @@
 * [Chado General Model](datamodel_erd/static/araport/chado_general_model.png)
 
 * Stock Module
-	* [Stock Module General View](datamodel_erd/static/araport/chado_general_model.png)
+	* [Stock Module General View](datamodel_erd/static/araport/stock_general_view.png)
 	* [Germplasm/Locus/Phenotype Association](datamodel_erd/static/araport/germplasm_locus_phenotype.png)
 	* [Stock Collections/Donors](datamodel_erd/static/araport/stock_collections_donors.jpg)
 * Phenotype Module
