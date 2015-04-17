@@ -1,7 +1,21 @@
 # Content
+
+ **[Araport Chado Modules - Overview](#araport-chado-modules)**
+ 
+ **[TAIR To Chado Loading Statistics](#tair-chado-stat)**
+
  **[Araport Static ERD](#araport-static-erd)**
  
  **[TAIR Static ERD](#tair-static-erd)**
+
+##<a name="araport-chado-modules"></a>Araport Chado Modules - Overview
+ 
+* [Araport Chado Modules Conceptual View](datamodel_erd/static/araport/araport_chado_modules.png)
+* [Data Model Summary](datamodel_erd/static/araport/araport_data_model_summary_erd.png)
+
+##<a name="araport-static-erd"></a>TAIR To Chado Loading Statistics
+
+* [Germplasm/Stock Loading Statistics](datamodel_erd/static/araport/arabidopsis_project_datatransfer_summary.png)
 
 ##<a name="araport-static-erd"></a>Araport Static ERD 
 
@@ -11,12 +25,12 @@
 	* [Main Data Types - Stock - Genotype - Phenotype](datamodel_erd/static/araport/main_data_types.png)
 	* [Stock Module General View](datamodel_erd/static/araport/stock_general_view.png)
 	* [Germplasm/Locus/Phenotype Association](datamodel_erd/static/araport/germplasm_locus_phenotype.png)
-	* [Stock Collections/Donors](datamodel_erd/static/araport/stock_collections_donors.jpg)
+	* [Stock Collections/Donors - (Not Used)](datamodel_erd/static/araport/stock_collections_donors.jpg)
 * Phenotype Module
 	* [Phenotype Module](datamodel_erd/static/araport/phenotype_datamodel.png)
 	* [Phenotype/CVTerm/Ontology Tagging](datamodel_erd/static/araport/phenotype_cvterm_ontology_tagging.jpg)
 	* [Phenotype Qualified Description](datamodel_erd/static/araport/phenotype_qualified_description.jpg)
-	* [Phenotype/Genotype/Stock Association](datamodel_erd/static/araport/phenotype_genotype_stock_association.jpg)
+
 	
 * [Genetic Module](datamodel_erd/static/araport/genetic_module.jpg)
 
